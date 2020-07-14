@@ -17,7 +17,7 @@ const styles = {
   },
   expandedForm: {
     display: 'flex',
-    alignItems: 'flex-end',
+    marginTop: 8,
     maxHeight: 200,
     transition: 'max-height 0.25s ease-in',
     '@media(max-width: 400px)': {
@@ -56,7 +56,7 @@ class AddForm extends React.Component {
     this.toggleExpandForm(false);
 
     const { name, quantity, category } = this.state;
-    this.props.addItem({ name, quantity, category });
+    this.props.addItem({ name, quantity: parseInt(quantity), category });
   }
 
   handleCategoryChange = (e) => {

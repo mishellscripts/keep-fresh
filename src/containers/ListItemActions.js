@@ -1,36 +1,36 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import withStyles from '@material-ui/core/styles/withStyles';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
-import { deleteItem } from '../store/actions';
+import ActionIcon from '../components/ActionIcon';
+import { increaseQuantity, decreaseQuantity, deleteItem } from '../store/actions';
 
-
-const styles = {
-  deleteIcon: {
-    display: 'flex',
-    cursor: 'pointer',
-    padding: 2,
-    backgroundColor: 'lightgray',
-    borderRadius: '100%',
-  }
-};
 
 class ListItemActions extends React.Component {
   render() {
     const { item, classes } = this.props;
     return (
       <div>
-        <div className={classes.deleteIcon}>
+        <ActionIcon>
+          <AddIcon onClick={() => this.props.increaseQuantity(item)} />
+        </ActionIcon>
+        <ActionIcon>
+          <RemoveIcon onClick={() => this.props.decreaseQuantity(item)} />
+        </ActionIcon>
+        <ActionIcon>
           <DeleteIcon onClick={() => this.props.deleteItem(item)} />
-        </div>
+        </ActionIcon>
       </div>
     );
   }
 }
 
 const mapDispatchToProps = {
+  increaseQuantity,
+  decreaseQuantity,
   deleteItem,
 };
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(ListItemActions));
+export default connect(null, mapDispatchToProps)(ListItemActions);

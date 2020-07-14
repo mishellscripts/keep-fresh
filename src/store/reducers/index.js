@@ -14,6 +14,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, loading: true };
     case types.GET_LIST_ERROR:
     case types.ADD_ITEM_ERROR:
+    case types.INCREASE_QUANTITY_ERROR:
+    case types.DECREASE_QUANTITY_ERROR:
     case types.DELETE_ITEM_ERROR:
       return { ...state, error: action.error, loading: false };
     case types.GET_LIST_SUCCESS:
@@ -23,6 +25,25 @@ const reducer = (state = initialState, action) => {
         ...state,
         loading: false,
         list: [...state.list, action.item],
+      };
+    case types.INCREASE_QUANTITY:
+      return {
+        ...state,
+        list: state.list.map((item) => {
+          if (item.name === action.item.name) {
+            return { ...item, quantity: item.quantity + 1 };
+          }
+          return item;
+        })
+      }
+    case types.DECREASE_QUANTITY:
+      const list = [ ...state.list ];
+      const itemIndex = list.findIndex((item) => item.name === action.item.name);
+      list[itemIndex].quantity -= 1;
+      return {
+        ...state,
+        list: list[itemIndex].quantity === 0 ?
+          [ ...list.slice(0, itemIndex), ...list.slice(itemIndex + 1) ] : list,
       };
     case types.DELETE_ITEM_SUCCESS:
       return {
