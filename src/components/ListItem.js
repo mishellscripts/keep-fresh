@@ -33,7 +33,7 @@ const styles = {
 class ListItem extends React.Component {
   render() {
     const { item, classes } = this.props;
-    const { name, quantity, category } = item;
+    const { name, quantity } = item;
     return (
       <div className={classes.root}>
         <div className={classes.itemDetail}>

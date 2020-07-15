@@ -20,12 +20,20 @@ const reducer = (state = initialState, action) => {
       return { ...state, error: action.error, loading: false };
     case types.GET_LIST_SUCCESS:
       return { ...state, list: action.list, loading: false };
-    case types.ADD_ITEM_SUCCESS:
+    case types.ADD_ITEM_SUCCESS: {
+      // update quantity if item is on list, otherwise, add to end of list
+      const itemIndex = state.list.findIndex((item) => item.name.toLowerCase() === action.item.name.toLowerCase());
       return {
         ...state,
         loading: false,
-        list: [...state.list, action.item],
+        list: itemIndex >= 0 ?
+          Object.assign([...state.list], {[itemIndex]: {
+            ...state.list[itemIndex],
+            quantity: state.list[itemIndex].quantity + action.item.quantity,
+          }}) :
+          [...state.list, action.item],
       };
+    }
     case types.INCREASE_QUANTITY:
       return {
         ...state,
@@ -36,20 +44,25 @@ const reducer = (state = initialState, action) => {
           return item;
         })
       }
-    case types.DECREASE_QUANTITY:
-      const list = [ ...state.list ];
-      const itemIndex = list.findIndex((item) => item.name === action.item.name);
-      list[itemIndex].quantity -= 1;
+    case types.DECREASE_QUANTITY: {
+      // TODO: this name comparison will become id based once added to db
+      const itemIndex = state.list.findIndex((item) => item.name.toLowerCase() === action.item.name.toLowerCase());
+      const list = Object.assign([...state.list], {
+        [itemIndex]: {
+          ...state.list[itemIndex],
+          quantity: state.list[itemIndex].quantity - 1,
+      }});
       return {
         ...state,
         list: list[itemIndex].quantity === 0 ?
           [ ...list.slice(0, itemIndex), ...list.slice(itemIndex + 1) ] : list,
       };
+    }
     case types.DELETE_ITEM_SUCCESS:
       return {
         ...state,
         loading: false,
-        list: state.list.filter((item) => item.name !== action.item.name),
+        list: state.list.filter((item) => item.name.toLowerCase() !== action.item.name.toLowerCase()),
       };
     default:
       return state;

@@ -6,13 +6,14 @@ const styles = (theme) => ({
     display: 'flex',
     alignItems: 'center',
     padding: '16px',
-    background: theme.palette.primary.main,
-    background: `-webkit-linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.main} 40%, ${theme.palette.primary.light})`,
     background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.primary.main} 40%, ${theme.palette.primary.light})`,
-    color: theme.palette.primary.contrastText,
     fontFamily: '"Varela Round", sans-serif',
     letterSpacing: '.2em',
     fontWeight: 'bold',
+  },
+  link: {
+    color: theme.palette.primary.contrastText,
+    textDecoration: 'none',
   },
 });
 
@@ -21,7 +22,7 @@ class NavBar extends React.Component {
     const { classes } = this.props;
     return (
       <nav className={classes.root}>
-        keepfresh
+        <a href="/" className={classes.link}>keepfresh</a>
       </nav>
     );
   }

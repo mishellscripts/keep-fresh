@@ -10,7 +10,7 @@ import { increaseQuantity, decreaseQuantity, deleteItem } from '../store/actions
 
 class ListItemActions extends React.Component {
   render() {
-    const { item, classes } = this.props;
+    const { item } = this.props;
     return (
       <div>
         <ActionIcon>
