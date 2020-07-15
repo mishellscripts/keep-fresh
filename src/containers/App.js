@@ -1,9 +1,13 @@
 import React from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
+import { connect } from 'react-redux'
 
 import NavBar from '../components/NavBar';
 import AddForm from './AddForm';
-import List from './List';
+import List from '../components/List';
+import { getList } from '../store/actions';
+import { CircularProgress } from '@material-ui/core';
+
 
 const styles = {
   container: {
@@ -14,18 +18,31 @@ const styles = {
 };
 
 class App extends React.Component {
+  componentDidMount() {
+    this.props.getList();
+  }
+  
   render() {
-    const { classes } = this.props;
+    const { classes, list, loading } = this.props;
     return (
       <div>
         <NavBar />
         <div className={classes.container}>
           <AddForm />
-          <List />
+          {loading ? <CircularProgress /> : <List list={list} />}
         </div>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(App);
+const mapStateToProps = (state) => ({
+  list: state.list,
+  loading: state.loading,
+});
+
+const mapDispatchToProps = {
+  getList,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(App));

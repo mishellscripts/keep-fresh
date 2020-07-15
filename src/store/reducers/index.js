@@ -22,15 +22,18 @@ const reducer = (state = initialState, action) => {
       return { ...state, list: action.list, loading: false };
     case types.ADD_ITEM_SUCCESS: {
       // update quantity if item is on list, otherwise, add to end of list
+      // TODO: this name comparison will become id based once added to db
       const itemIndex = state.list.findIndex((item) => item.name.toLowerCase() === action.item.name.toLowerCase());
       return {
         ...state,
         loading: false,
         list: itemIndex >= 0 ?
-          Object.assign([...state.list], {[itemIndex]: {
-            ...state.list[itemIndex],
-            quantity: state.list[itemIndex].quantity + action.item.quantity,
-          }}) :
+          Object.assign([...state.list], {
+            [itemIndex]: {
+              ...state.list[itemIndex],
+              quantity: state.list[itemIndex].quantity + action.item.quantity,
+            }
+          }) :
           [...state.list, action.item],
       };
     }
@@ -38,7 +41,8 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         list: state.list.map((item) => {
-          if (item.name === action.item.name) {
+          // TODO: this name comparison will become id based once added to db
+          if (item.name.toLowerCase() === action.item.name.toLowerCase()) {
             return { ...item, quantity: item.quantity + 1 };
           }
           return item;
@@ -51,7 +55,8 @@ const reducer = (state = initialState, action) => {
         [itemIndex]: {
           ...state.list[itemIndex],
           quantity: state.list[itemIndex].quantity - 1,
-      }});
+        }
+      });
       return {
         ...state,
         list: list[itemIndex].quantity === 0 ?
@@ -62,6 +67,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        // TODO: this name comparison will become id based once added to db
         list: state.list.filter((item) => item.name.toLowerCase() !== action.item.name.toLowerCase()),
       };
     default:

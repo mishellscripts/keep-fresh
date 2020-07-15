@@ -44,6 +44,7 @@ const styles = {
 const defaultFormState = {
   expanded: false,
   error: false,
+  dirty: false,
   data: {
     category: {
       value: '',
@@ -77,12 +78,16 @@ class AddForm extends React.Component {
 
     const { data } = this.state;
 
-    // final form validation before submit
     let isValid = true;
+    // final form validation before submit
     Object.keys(data).forEach((input) => {
-      isValid = this.validateInput(input, data[input].value);
+      if (!this.validateInput(input, data[input].value)) {
+        isValid = false;
+      }
     });
+
     if (!isValid) {
+      this.setState({ error: true, dirty: false });
       return;
     }
 
@@ -106,12 +111,14 @@ class AddForm extends React.Component {
     } else if (input === 'name') {
       return value.length > 0;
     }
+    return true;
   }
 
   handleInputChange = (e) => {
     const value = e.target.value.trim();
     const name = e.target.name;
     this.setState((state) => ({
+      dirty: true,
       data: {
         ...state.data,
         [name]: {
@@ -126,8 +133,10 @@ class AddForm extends React.Component {
 
   render() {
     const { classes, loading } = this.props;
-    const { expanded, data } = this.state;
+    const { expanded, data, error, dirty } = this.state;
     const { name, category, quantity } = data;
+
+    const hasFormError = error && !dirty;
 
     return (
       <form className={classes.root} onSubmit={this.handleSubmit}>
@@ -139,8 +148,8 @@ class AddForm extends React.Component {
           onChange={this.handleInputChange}
           className={classes.textField}
           disabled={loading}
-          error={name.touched && !name.isValid}
-          helperText={name.touched && !name.isValid ? name.error : ''}
+          error={!name.isValid && (hasFormError || name.touched)}
+          helperText={!name.isValid && (hasFormError || name.touched) ? name.error : ''}
         />
         <div className={classNames(classes.expandedForm, { [classes.hidden]: !expanded })}>
           <TextField
@@ -150,8 +159,8 @@ class AddForm extends React.Component {
             className={classes.textField}
             disabled={loading}
             onChange={this.handleInputChange}
-            error={quantity.touched && !quantity.isValid}
-            helperText={quantity.touched && !quantity.isValid ? quantity.error : ''}
+            error={!quantity.isValid && (hasFormError || quantity.touched)}
+            helperText={!quantity.isValid && (hasFormError || quantity.touched) ? quantity.error : ''}
           />
           <TextField
             name="category"
