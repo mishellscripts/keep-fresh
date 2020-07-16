@@ -1,41 +1,20 @@
-import { put, takeLatest, all, takeEvery, delay } from 'redux-saga/effects';
+import { put, takeLatest, all, takeEvery } from 'redux-saga/effects';
 import * as types from '../actions/types';
+import * as api from '../../api';
 
 // Async generator functions
-function* getListSaga() {
+export function* getListSaga() {
   try {
-    const mockData = [
-      {
-        name: 'Apple',
-        quantity: 3,
-        category: 'Fruit',
-      },
-      {
-        name: 'Mango',
-        quantity: 4,
-        category: 'Fruit',
-      },
-      {
-        name: 'Lemon',
-        quantity: 2,
-        category: 'Fruit',
-      },
-      {
-        name: 'Steak',
-        quantity: 1,
-        category: 'Meat',
-      },
-    ];
-    yield delay(1000);
-    yield put({ type: types.GET_LIST_SUCCESS, list: mockData });
+    const list = yield api.getList();
+    yield put({ type: types.GET_LIST_SUCCESS, list });
   } catch (error) {
     yield put({ type: types.GET_LIST_ERROR, error });
   }
 }
 
-function* addItemSaga({ item }) {
+export function* addItemSaga({ item }) {
   try {
-    yield delay(1000);
+    yield api.addItem();
     yield put({ type: types.ADD_ITEM_SUCCESS, item });
   } catch (error) {
     yield put({ type: types.ADD_ITEM_ERROR, error });
@@ -44,7 +23,7 @@ function* addItemSaga({ item }) {
 
 function* deleteItemSaga({ item }) {
   try {
-    yield delay(1000);
+    yield api.deleteItem();
     yield put({ type: types.DELETE_ITEM_SUCCESS, item });
   } catch (error) {
     yield put({ type: types.DELETE_ITEM_ERROR, error });
@@ -53,7 +32,7 @@ function* deleteItemSaga({ item }) {
 
 function* increaseQuantitySaga({ item }) {
   try {
-    yield delay(1000);
+    yield api.increaseQuantity();
   } catch (error) {
     yield put({ type: types.INCREASE_QUANTITY_ERROR, error });
   }
@@ -61,7 +40,7 @@ function* increaseQuantitySaga({ item }) {
 
 function* decreaseQuantitySaga({ item }) {
   try {
-    yield delay(1000);
+    yield api.decreaseQuantity();
   } catch (error) {
     yield put({ type: types.DECREASE_QUANTITY_ERROR, error });
   }
